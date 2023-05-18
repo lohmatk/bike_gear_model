@@ -37,14 +37,6 @@ class Transmission:
     def change_chain(self, chain):
         self.chain = chain
 
-    def show_chain_status(self):
-        # print(f"Current chain installed: {self.chain.number}")
-        pass
-
-    def show_resource_status(self):
-        # print(f"cassette resource:{round(self.cassette.resource, 2)}, chain resource {round(self.chain.resource, 4)}")
-        pass
-
 
 class ListOfChains:
     def __init__(self):
@@ -71,7 +63,7 @@ axfreq = fig.add_axes([0.25, 0.05, 0.65, 0.03])
 run_slider = Slider(
     ax=axfreq,
     label='Frequency [rides]',
-    valmin=0.1,
+    valmin=1,
     valmax=30,
     valinit=5,
 )
@@ -102,21 +94,15 @@ def run_model(runs: int, chains: int):
     for i in range(1, 290):
         transmission.chain = list_of_chains.chains[n]
         transmission.ride(i)
-        transmission.show_resource_status()
         x.append(i)
-        try:
-            if i % value == 0 and i >= value:
-                n += 1
-                if n > len(list_of_chains.chains) - 1:
-                    n = 0
-                transmission.change_chain(list_of_chains.chains[n])
-                transmission.show_chain_status()
-            if len(list_of_chains.chains) == 1:  # для одной цепи
+        if i % value == 0 and i >= value:
+            n += 1
+            if n > len(list_of_chains.chains) - 1:
                 n = 0
-                transmission.change_chain(list_of_chains.chains[n])
-                transmission.show_chain_status()
-        except ZeroDivisionError:
-            print('Cannot devide by zero.')
+            transmission.change_chain(list_of_chains.chains[n])
+        if len(list_of_chains.chains) == 1:  # для одной цепи
+            n = 0
+            transmission.change_chain(list_of_chains.chains[n])
 
     ax.clear()
 
